@@ -27,7 +27,7 @@ import com.herocraftonline.heroes.Heroes;
 public class Nations extends JavaPlugin
 {
 	private static List<Experience> experiences;
-	private static double expModifier;
+	public static double EXPMODIFIER;
 	public DBSyncer dbsyncer;
 	private int syncScheduleId;
 	private Heroes heroes;
@@ -50,7 +50,7 @@ public class Nations extends JavaPlugin
 		
 		Bukkit.getPluginManager().registerEvents(new PlayerListener(this), this);
 		
-		this.nationManager = new NationManager();
+		this.nationManager = new NationManager(this);
 		this.yamlStorageManager = new YamlStorageManager(this);
 		dbsyncer = new DBSyncer(this);
 		setupSyncing();
