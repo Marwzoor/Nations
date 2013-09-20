@@ -4,6 +4,7 @@ import java.sql.Connection;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Player;
 
 import com.herocraftonline.heroes.characters.Hero;
@@ -65,7 +66,12 @@ public class DBSyncer extends Thread
 				secondaryclasslevel = hero.getLevel(hero.getSecondClass());
 			}
 			
-			c.createStatement().execute("INSERT INTO users (username, maxhealth, nation, nationlevel, primaryclass, primaryclasslevel, secondaryclass, secondaryclasslevel) VALUES (" + "'" + p.getName() + "'" + ", " + p.getMaxHealth() + ", '" + plugin.getNationManager().getNation(nationPlayer).getName() + "', " + nationPlayer.getLevel() + ", '" + primaryclass + "', " + primaryclasslevel + ", " + "'" + secondaryclass + "', " + secondaryclasslevel + ") on duplicate key update username=VALUES(username), maxhealth=VALUES(maxhealth), nation=VALUES(nation), nationlevel=VALUES(nationlevel), primaryclass=VALUES(primaryclass), primaryclasslevel=VALUES(primaryclasslevel), secondaryclass=VALUES(secondaryclass), secondaryclasslevel=VALUES(secondaryclasslevel)");
+			c.createStatement().execute("INSERT INTO users (username, maxhealth, nation, nationlevel, primaryclass, primaryclasslevel, secondaryclass, secondaryclasslevel)" +
+					" VALUES (" + "'" + p.getName() + "'" + ", " + ((Damageable)p).getMaxHealth() + ", '" + plugin.getNationManager().getNation(nationPlayer).getName() + "" +
+							"', " + nationPlayer.getLevel() + ", '" + primaryclass + "', " + primaryclasslevel + ", " + "'" + secondaryclass + "', " + secondaryclasslevel + ") on " +
+									"duplicate key update username=VALUES(username), maxhealth=VALUES(maxhealth), nation=VALUES(nation), nationlevel=VALUES(nationlevel), " +
+									"primaryclass=VALUES(primaryclass), primaryclasslevel=VALUES(primaryclasslevel), secondaryclass=VALUES(secondaryclass), " +
+									"secondaryclasslevel=VALUES(secondaryclasslevel)");
 		}
 		
 		}
