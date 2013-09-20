@@ -82,7 +82,7 @@ public class NationCommand implements CommandExecutor
 								nationPlayer.setExperience(0);
 								nationPlayer.setLevel(1);
 								
-								sender.sendMessage(ChatColor.DARK_RED + player.getName() + "'s " + ChatColor.GRAY + " nation has been changed from " + ChatColor.GREEN + prevNationName + ChatColor.GRAY + " to " + ChatColor.GREEN + newNation.getName() + ChatColor.GRAY + "!");
+								sender.sendMessage(ChatColor.DARK_RED + player.getName() + "'s " + ChatColor.GRAY + "nation has been changed from " + ChatColor.GREEN + prevNationName + ChatColor.GRAY + " to " + ChatColor.GREEN + newNation.getName() + ChatColor.GRAY + "!");
 								
 								return true;
 							}

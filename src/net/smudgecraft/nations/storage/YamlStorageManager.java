@@ -47,16 +47,16 @@ public class YamlStorageManager
 	
 	public File getConfigFile(Player player)
 	{
-		File folder = new File(plugin.getDataFolder() + "/players/" + Character.toLowerCase(player.getName().charAt(0)) + "/" + player.getName());
+		File folder = new File(plugin.getDataFolder() + "/players/" + Character.toLowerCase(player.getName().charAt(0)) + "/" + player.getName().toLowerCase());
 		
-		return new File(folder + "/" + player.getName() + ".yml");
+		return new File(folder + "/" + player.getName().toLowerCase() + ".yml");
 	}
 	
 	public File getConfigFile(String name)
 	{
-		File folder = new File(plugin.getDataFolder() + "/players/" + Character.toLowerCase(name.charAt(0)) + "/" + name);
+		File folder = new File(plugin.getDataFolder() + "/players/" + Character.toLowerCase(name.charAt(0)) + "/" + name.toLowerCase());
 		
-		return new File(folder + "/" + name + ".yml");
+		return new File(folder + "/" + name.toLowerCase() + ".yml");
 	}
 	
 	public FileConfiguration getConfig(Player player)
@@ -70,9 +70,9 @@ public class YamlStorageManager
 	
 	public FileConfiguration getConfig(String name)
 	{
-		File folder = new File(plugin.getDataFolder() + "/players/" + Character.toLowerCase(name.charAt(0)) + "/" + name);
+		File folder = new File(plugin.getDataFolder() + "/players/" + Character.toLowerCase(name.charAt(0)) + "/" + name.toLowerCase());
 		
-		File file = new File(folder + "/" + name + ".yml");
+		File file = new File(folder + "/" + name.toLowerCase() + ".yml");
 		
 		return YamlConfiguration.loadConfiguration(file);
 	}
@@ -118,12 +118,12 @@ public class YamlStorageManager
 		if(!folder.exists())
 			folder.mkdirs();
 		
-		File playerFolder = new File(folder + "/" + player.getName());
+		File playerFolder = new File(folder + "/" + player.getName().toLowerCase());
 		
 		if(!playerFolder.exists())
 			playerFolder.mkdir();
 		
-		File file = new File(playerFolder + "/" + player.getName() + ".yml");
+		File file = new File(playerFolder + "/" + player.getName().toLowerCase() + ".yml");
 		
 		if(!file.exists())
 		{
@@ -166,12 +166,12 @@ public class YamlStorageManager
 		if(!folder.exists())
 			folder.mkdir();
 		
-		File playerFolder = new File(folder + "/" + player.getName());
+		File playerFolder = new File(folder + "/" + player.getName().toLowerCase());
 		
 		if(!playerFolder.exists())
 			playerFolder.mkdir();
 		
-		File file = new File(playerFolder + "/" + player.getName() + ".yml");
+		File file = new File(playerFolder + "/" + player.getName().toLowerCase() + ".yml");
 		
 		if(!file.exists())
 		{
@@ -240,12 +240,12 @@ public class YamlStorageManager
 		if(!folder.exists())
 			folder.mkdirs();
 		
-		File playerFolder = new File(folder + "/" + player.getName());
+		File playerFolder = new File(folder + "/" + player.getName().toLowerCase());
 		
 		if(!playerFolder.exists())
 			playerFolder.mkdir();
 		
-		File file = new File(playerFolder + "/" + player.getName() + ".yml");
+		File file = new File(playerFolder + "/" + player.getName().toLowerCase() + ".yml");
 		
 		if(!file.exists())
 		{
