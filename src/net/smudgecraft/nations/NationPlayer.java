@@ -7,6 +7,7 @@ public class NationPlayer
 	private Player player;
 	private int level;
 	private int experience;
+	private Nation nation;
 	
 	public NationPlayer(Player player)
 	{
@@ -77,4 +78,15 @@ public class NationPlayer
 		
 		return exp;
 	}
+	
+	public void setNation(Nation nation)
+	{
+		this.nation = nation;
+	}
+	
+	public Nation getNation()
+	{
+		return nation;
+	}
+	
 }
