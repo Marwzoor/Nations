@@ -1,6 +1,7 @@
 package net.smudgecraft.nations.commands;
 
 import net.smudgecraft.nations.Nation;
+import net.smudgecraft.nations.NationManager;
 import net.smudgecraft.nations.NationPlayer;
 import net.smudgecraft.nations.Nations;
 import net.smudgecraft.nations.OfflineNationPlayer;
@@ -42,7 +43,7 @@ public class NationCommand implements CommandExecutor
 							{
 								OfflinePlayer player = Bukkit.getOfflinePlayer(args[2]);
 								
-								Nation newNation = plugin.getNationManager().getNation(args[3]);
+								Nation newNation = NationManager.getNation(args[3]);
 								
 								if(newNation==null)
 								{
@@ -67,17 +68,16 @@ public class NationCommand implements CommandExecutor
 								
 								NationPlayer nationPlayer = onPlayer.getNationPlayer();
 								
-								Nation previousNation = plugin.getNationManager().getNation(nationPlayer);
+								Nation previousNation = nationPlayer.getNation();
 								
 								String prevNationName = "None";
 								
 								if(previousNation!=null)
 								{
-									previousNation.removeNationPlayer(nationPlayer);
 									prevNationName = previousNation.getName();
 								}
 								
-								newNation.addNationPlayer(nationPlayer);
+								nationPlayer.setNation(newNation);
 								
 								nationPlayer.setExperience(0);
 								nationPlayer.setLevel(1);

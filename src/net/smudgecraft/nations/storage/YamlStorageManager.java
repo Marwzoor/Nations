@@ -10,6 +10,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 import net.smudgecraft.nations.Nation;
+import net.smudgecraft.nations.NationManager;
 import net.smudgecraft.nations.NationPlayer;
 import net.smudgecraft.nations.Nations;
 import net.smudgecraft.nations.OfflineNationPlayer;
@@ -145,7 +146,7 @@ public class YamlStorageManager
 
 			NationPlayer nationPlayer = new NationPlayer(player);
 			
-			if(config.contains("nation.name") && config.contains("nation.level") && plugin.getNationManager().containsNationByName(config.getString("nation.name")) && config.contains("nation.experience"))
+			if(config.contains("nation.name") && config.contains("nation.level") && NationManager.containsNationByName(config.getString("nation.name")) && config.contains("nation.experience"))
 			{
 				nationPlayer.setLevel(config.getInt("nation.level"));
 				nationPlayer.setExperience(config.getInt("nation.experience"));
@@ -267,7 +268,7 @@ public class YamlStorageManager
 
 			OfflineNationPlayer nationPlayer = new OfflineNationPlayer(player);
 			
-			if(config.contains("nation.name") && config.contains("nation.level") && plugin.getNationManager().containsNationByName(config.getString("nation.name")) && config.contains("nation.experience"))
+			if(config.contains("nation.name") && config.contains("nation.level") && NationManager.containsNationByName(config.getString("nation.name")) && config.contains("nation.experience"))
 			{
 				nationPlayer.setLevel(config.getInt("nation.level"));
 				nationPlayer.setExperience(config.getInt("nation.experience"));
@@ -281,7 +282,7 @@ public class YamlStorageManager
 	
 	public boolean savePlayer(Player player)
 	{
-		NationPlayer nplayer = plugin.getNationManager().getNationPlayer(player);
+		NationPlayer nplayer = NationManager.getNationPlayer(player);
 		
 		if(nplayer==null)
 			return false;
@@ -291,10 +292,10 @@ public class YamlStorageManager
 		if(config==null)
 			return false;
 		
-		if(plugin.getNationManager().getNation(nplayer)==null)
+		if(nplayer.getNation()==null)
 			return false;
 		
-		Nation nation = plugin.getNationManager().getNation(nplayer);
+		Nation nation = nplayer.getNation();
 		
 		config.set("nation.name", nation.getName());
 		
@@ -325,10 +326,10 @@ public class YamlStorageManager
 		if(config==null)
 			return false;
 		
-		if(plugin.getNationManager().getNation(nplayer)==null)
+		if(nplayer.getNation()==null)
 			return false;
 		
-		Nation nation = plugin.getNationManager().getNation(nplayer);
+		Nation nation = nplayer.getNation();
 		
 		config.set("nation.name", nation.getName());
 		

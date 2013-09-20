@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 
 import com.herocraftonline.heroes.characters.Hero;
 
+import net.smudgecraft.nations.NationManager;
 import net.smudgecraft.nations.NationPlayer;
 import net.smudgecraft.nations.Nations;
 
@@ -45,12 +46,12 @@ public class DBSyncer extends Thread
 		{							
 			Hero hero = plugin.getHeroes().getCharacterManager().getHero(p);
 			
-			NationPlayer nationPlayer = plugin.getNationManager().getNationPlayer(p);
+			NationPlayer nationPlayer = NationManager.getNationPlayer(p);
 			
 			if(nationPlayer==null)
 				return;
 			
-			if(plugin.getNationManager().getNation(nationPlayer)==null)
+			if(nationPlayer.getNation()==null)
 				return;
 			
 			String primaryclass = hero.getHeroClass().getName();
@@ -67,7 +68,7 @@ public class DBSyncer extends Thread
 			}
 			
 			c.createStatement().execute("INSERT INTO users (username, maxhealth, nation, nationlevel, primaryclass, primaryclasslevel, secondaryclass, secondaryclasslevel)" +
-					" VALUES (" + "'" + p.getName() + "'" + ", " + ((Damageable)p).getMaxHealth() + ", '" + plugin.getNationManager().getNation(nationPlayer).getName() + "" +
+					" VALUES (" + "'" + p.getName() + "'" + ", " + ((Damageable)p).getMaxHealth() + ", '" + nationPlayer.getNation().getName() + "" +
 							"', " + nationPlayer.getLevel() + ", '" + primaryclass + "', " + primaryclasslevel + ", " + "'" + secondaryclass + "', " + secondaryclasslevel + ") on " +
 									"duplicate key update username=VALUES(username), maxhealth=VALUES(maxhealth), nation=VALUES(nation), nationlevel=VALUES(nationlevel), " +
 									"primaryclass=VALUES(primaryclass), primaryclasslevel=VALUES(primaryclasslevel), secondaryclass=VALUES(secondaryclass), " +

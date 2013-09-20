@@ -18,7 +18,7 @@ public class OfflineNationPlayer
 	{
 		if(player.isOnline())
 		{
-			return Nations.getPlugin().getNationManager().getNationPlayer(player.getPlayer());
+			return NationManager.getNationPlayer(player.getPlayer());
 		}
 		
 		return null;

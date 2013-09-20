@@ -1,5 +1,8 @@
 package net.smudgecraft.nations;
 
+import net.smudgecraft.nations.events.ChangeLevelEvent;
+
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 public class NationPlayer
@@ -21,18 +24,39 @@ public class NationPlayer
 	
 	public void addExperience(int exp)
 	{
-		this.experience+=exp;
+		int futureExperience = this.experience + exp;
 		
-		int remaining = getRemainingExperience();
+		int futureLevel = this.level;
+		
+		int remaining = getRemainingExperience(futureLevel, futureExperience);
 		
 		while(remaining<=0)
 		{
-			++this.level;
+			++futureLevel;
 			
-			this.experience=remaining*-1;
+			futureExperience=remaining*-1;
 			
-			remaining = getRemainingExperience();
+			remaining = getRemainingExperience(futureLevel, futureExperience);
 		}
+		
+		if(this.level!=futureLevel)
+		{
+			ChangeLevelEvent clEvent = new ChangeLevelEvent(this, this.nation.getName(), this.level, futureLevel, this.experience, futureExperience);
+		
+			Bukkit.getPluginManager().callEvent(clEvent);
+		
+			if(clEvent.isCancelled())
+			{
+				return;
+			}
+			
+			this.level=clEvent.getTo();
+			this.experience=clEvent.getToExperience();
+			
+			return;
+		}
+		
+		this.experience+=exp;
 	}
 	
 	public void removeExperience(int exp)
@@ -67,14 +91,21 @@ public class NationPlayer
 	
 	public int getRemainingExperience()
 	{
-		int exp = (int) (80 * Math.pow(Nations.getExpModifier(), this.level)) - experience;
+		int exp = (int) (20 * Math.pow(NationManager.EXP_MODIFIER, this.level)) - experience;
+		
+		return exp;
+	}
+	
+	public int getRemainingExperience(int level, int experience)
+	{
+		int exp = (int) (20 * Math.pow(NationManager.EXP_MODIFIER, level)) - experience;
 		
 		return exp;
 	}
 	
 	public int getNeededExperience(int level)
 	{
-		int exp = (int) (80 * Math.pow(Nations.getExpModifier(), this.level));
+		int exp = (int) (20 * Math.pow(Nations.getExpModifier(), this.level));
 		
 		return exp;
 	}

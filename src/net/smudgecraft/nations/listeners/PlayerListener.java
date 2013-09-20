@@ -1,6 +1,7 @@
 package net.smudgecraft.nations.listeners;
 
 import net.smudgecraft.nations.Nation;
+import net.smudgecraft.nations.NationManager;
 import net.smudgecraft.nations.NationPlayer;
 import net.smudgecraft.nations.NationSkill;
 import net.smudgecraft.nations.Nations;
@@ -37,12 +38,9 @@ public class PlayerListener implements Listener
 		
 		EntityType entityType = event.getEntityType();
 				
-		NationPlayer nationPlayer = plugin.getNationManager().getNationPlayer(player);
+		NationPlayer nationPlayer = NationManager.getNationPlayer(player);
 		
-		if(plugin.getNationManager().getNation(nationPlayer).getName().equals("None"))
-			return;
-		
-		if(nationPlayer==null)
+		if(nationPlayer == null || nationPlayer.getNation() == null || nationPlayer.getNation().getName().equals("None"))
 			return;
 		
 		int experience = Nations.getExperience(entityType.getName());
@@ -55,11 +53,11 @@ public class PlayerListener implements Listener
 		
 			int newLevel = nationPlayer.getLevel();
 			
-			player.sendMessage(plugin.getNationManager().getNation(nationPlayer).getName() + ": " + ChatColor.GRAY + "Gained " + ChatColor.WHITE + experience + ChatColor.GRAY + " Exp");
+			player.sendMessage(nationPlayer.getNation().getName() + ": " + ChatColor.GRAY + "Gained " + ChatColor.WHITE + experience + ChatColor.GRAY + " Exp");
 		
 			if(previousLevel<newLevel)
 			{
-				player.sendMessage(ChatColor.GRAY + "You gained a level! (Lvl " + ChatColor.WHITE + newLevel + ChatColor.GRAY + " " + plugin.getNationManager().getNation(nationPlayer).getName() + ")");
+				player.sendMessage(ChatColor.GRAY + "You gained a level! (Lvl " + ChatColor.WHITE + newLevel + ChatColor.GRAY + " " + nationPlayer.getNation().getName() + ")");
 			}
 		}
 	}
@@ -76,11 +74,11 @@ public class PlayerListener implements Listener
 			player.sendMessage(ChatColor.GREEN + " Class: " + ChatColor.WHITE + hero.getHeroClass().getName() + " | Level: " + hero.getLevel(hero.getHeroClass()) + ChatColor.GREEN + "/" + ChatColor.WHITE + hero.getHeroClass().getMaxLevel());
 			player.sendMessage(ChatColor.DARK_GREEN + "   EXP: " + Messaging.createExperienceBar(hero, hero.getHeroClass()));
 			
-			NationPlayer nationPlayer = plugin.getNationManager().getNationPlayer(player);
+			NationPlayer nationPlayer = NationManager.getNationPlayer(player);
 			
-			if(nationPlayer!=null && plugin.getNationManager().getNation(nationPlayer)!=null && !plugin.getNationManager().getNation(nationPlayer).getName().equals("None"))
+			if(nationPlayer!=null && nationPlayer.getNation()!=null && !nationPlayer.getNation().getName().equals("None"))
 			{
-				Nation nation = plugin.getNationManager().getNation(nationPlayer);
+				Nation nation = nationPlayer.getNation();
 				
 				double exp = nationPlayer.getExperience();
 				double neededExp = nationPlayer.getNeededExperience(nationPlayer.getLevel());
@@ -112,11 +110,13 @@ public class PlayerListener implements Listener
 		{
 			String nationName = plugin.getYamlStorageManager().getNationName(player);
 			
-			if(plugin.getNationManager().containsNationByName(nationName))
+			if(NationManager.containsNationByName(nationName))
 			{
-				plugin.getNationManager().getNation(nationName).addNationPlayer(nationPlayer);
+				nationPlayer.setNation(NationManager.getNation(nationName));
 				
-				for(NationSkill nSkill : plugin.getNationManager().getNation(nationName).getNationSkills())
+				NationManager.addNationPlayer(nationPlayer);
+				
+				for(NationSkill nSkill : NationManager.getNation(nationName).getNationSkills())
 				{
 					final Hero hero = plugin.getHeroes().getCharacterManager().getHero(player);
 					
@@ -129,7 +129,8 @@ public class PlayerListener implements Listener
 		}
 		else
 		{
-			plugin.getNationManager().getNation("None").addNationPlayer(nationPlayer);
+			nationPlayer.setNation(NationManager.getNation("None"));
+			NationManager.addNationPlayer(nationPlayer);
 		}
 	}
 	
@@ -138,14 +139,17 @@ public class PlayerListener implements Listener
 	{
 		Player player = event.getPlayer();
 		
-		NationPlayer nationPlayer = plugin.getNationManager().getNationPlayer(player);
+		NationPlayer nationPlayer = NationManager.getNationPlayer(player);
 		
 		if(nationPlayer==null)
 			return;
 		
 		plugin.getYamlStorageManager().savePlayer(nationPlayer);
 		
-		plugin.getNationManager().getNation(player).removeNationPlayer(player);
+		if(nationPlayer.getNation()==null)
+			return;
+		
+		NationManager.removePlayer(nationPlayer);
 	}
 	
 	 public static String createExperienceBar(double experience, double neededexperience) {
