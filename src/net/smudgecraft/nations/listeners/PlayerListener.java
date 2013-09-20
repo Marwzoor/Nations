@@ -7,6 +7,7 @@ import net.smudgecraft.nations.NationSkill;
 import net.smudgecraft.nations.Nations;
 
 import org.bukkit.ChatColor;
+import org.bukkit.block.Biome;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -16,6 +17,7 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
+import com.herocraftonline.heroes.api.events.CharacterDamageEvent;
 import com.herocraftonline.heroes.characters.Hero;
 import com.herocraftonline.heroes.util.Messaging;
 
@@ -26,6 +28,41 @@ public class PlayerListener implements Listener
 	public PlayerListener(Nations plugin)
 	{
 		this.plugin=plugin;
+	}
+	
+	@EventHandler
+	public void onCharacterDamage(CharacterDamageEvent event)
+	{
+		if(event.isCancelled())
+			return;
+		
+		if(!(event.getEntity() instanceof Player))
+			return;
+
+		Player player = (Player) event.getEntity();
+		
+		NationPlayer nationPlayer = NationManager.getNationPlayer(player);
+				
+		if(nationPlayer==null)
+			return;
+		
+		Biome currentBiome = player.getLocation().getBlock().getBiome();
+		
+		if(nationPlayer.getNation()==null)
+			return;
+		
+		if(!nationPlayer.getNation().isOriginBiome(currentBiome))
+			return;
+		
+		double reducedDamage = nationPlayer.getNation().getOriginReducedDamage();
+		
+		double damage = event.getDamage();
+		
+		reducedDamage = (1 - (reducedDamage/100));
+		
+		damage = damage*reducedDamage;
+		
+		event.setDamage((int) damage);
 	}
 	
 	@EventHandler
@@ -152,7 +189,8 @@ public class PlayerListener implements Listener
 		NationManager.removePlayer(nationPlayer);
 	}
 	
-	 public static String createExperienceBar(double experience, double neededexperience) {
+	 public static String createExperienceBar(double experience, double neededexperience) 
+	 {
 		    StringBuilder expBar = new StringBuilder(new StringBuilder().append(ChatColor.RED).append("[").append(ChatColor.DARK_GREEN).toString());
 		    int progress = (int)(experience / neededexperience * 50.0D);
 		    for (int i = 0; i < progress; i++) {
@@ -166,5 +204,5 @@ public class PlayerListener implements Listener
 		    expBar.append(new StringBuilder().append(" - ").append(ChatColor.DARK_GREEN).append(progress * 2).append("%  ").toString());
 		    expBar.append(new StringBuilder().append("").append(ChatColor.DARK_GREEN).append((int)experience).append(ChatColor.RED).append("/").append(ChatColor.DARK_GREEN).append((int) neededexperience).toString());
 		    return expBar.toString();
-}
+	 }
 }

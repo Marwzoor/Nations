@@ -4,6 +4,7 @@ import java.sql.Connection;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Player;
 
@@ -26,7 +27,14 @@ public class DBSyncer extends Thread
 	{
 		try
 		{
-		Bukkit.getConsoleSender().sendMessage(ChatColor.LIGHT_PURPLE + "Started thread safe database syncing...");	
+			
+		for(OfflinePlayer op : Bukkit.getOperators())
+		{
+			if(op.isOnline())
+			{
+				op.getPlayer().sendMessage(ChatColor.LIGHT_PURPLE + "[Nations] Initialized database syncing...");
+			}
+		}
 		
 		MySQL mysql = new MySQL(plugin, "smudgecraft.net", "3306", "userdata", "root", "M1829cmc@");
 		
@@ -82,7 +90,13 @@ public class DBSyncer extends Thread
 			this.kill();
 		}
 		
-		Bukkit.getConsoleSender().sendMessage(ChatColor.LIGHT_PURPLE + "Database synced!");	
+		for(OfflinePlayer op : Bukkit.getOperators())
+		{
+			if(op.isOnline())
+			{
+				op.getPlayer().sendMessage(ChatColor.LIGHT_PURPLE + "[Nations] Database synced!");
+			}
+		}
 		
 		this.kill();
 	}

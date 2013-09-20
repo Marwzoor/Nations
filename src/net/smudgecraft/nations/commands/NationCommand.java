@@ -93,6 +93,70 @@ public class NationCommand implements CommandExecutor
 								return true;
 							}
 						}
+						else if(args[1].equalsIgnoreCase("level"))
+						{
+							if(args.length>3)
+							{
+								OfflinePlayer player = Bukkit.getOfflinePlayer(args[2]);
+								
+								if(player.isOnline())
+								{
+									NationPlayer nationPlayer = NationManager.getNationPlayer(player.getPlayer());
+									
+									int level = nationPlayer.getLevel();
+									
+									int levelBefore = level;
+									
+									try
+									{
+										level = Integer.parseInt(args[3]);
+									}
+									catch(NumberFormatException e)
+									{
+										sender.sendMessage(ChatColor.BLUE + args[3] + ChatColor.RED + " is not a valid number!");
+										sender.sendMessage(ChatColor.RED + "Command usage: " + ChatColor.BLUE + "/nation admin level <player> <nation> <level>");
+										return true;
+									}
+									
+									nationPlayer.setLevel(level);
+									nationPlayer.setExperience(0);
+									
+									sender.sendMessage(ChatColor.DARK_RED + nationPlayer.getPlayer().getName() + "'s " + ChatColor.GRAY + "level has been changed from " + ChatColor.GREEN + levelBefore + ChatColor.GRAY + " to " + ChatColor.GREEN + level + ChatColor.GRAY + "!");
+								}
+								else
+								{
+									OfflineNationPlayer onationPlayer = plugin.getYamlStorageManager().loadPlayer(player);
+									
+									int level = onationPlayer.getLevel();
+									
+									int levelBefore = level;
+									
+									try
+									{
+										level = Integer.parseInt(args[3]);
+									}
+									catch(NumberFormatException e)
+									{
+										sender.sendMessage(ChatColor.BLUE + args[3] + ChatColor.RED + " is not a valid number!");
+										sender.sendMessage(ChatColor.RED + "Command usage: " + ChatColor.BLUE + "/nation admin level <player> <nation> <level>");
+										return true;
+									}
+									
+									onationPlayer.setLevel(level);
+									onationPlayer.setExperience(0);
+									
+									plugin.getYamlStorageManager().saveOfflinePlayer(onationPlayer);
+									
+									sender.sendMessage(ChatColor.DARK_RED + onationPlayer.getPlayer().getName() + "'s " + ChatColor.GRAY + "level has been changed from " + ChatColor.GREEN + levelBefore + ChatColor.GRAY + " to " + ChatColor.GREEN + level + ChatColor.GRAY + "!");
+								}
+							}
+							else
+							{
+								sender.sendMessage(ChatColor.RED + "Incorrect command usage!");
+								sender.sendMessage(ChatColor.RED + "Command usage: " + ChatColor.BLUE + "/nation admin level <player> <nation> <level>");
+								return true;
+							}
+						}
 					}
 				}
 			}

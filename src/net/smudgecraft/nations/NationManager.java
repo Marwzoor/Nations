@@ -8,6 +8,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.block.Biome;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -124,12 +125,20 @@ public class NationManager
 		{
 			nationConfig.set("Alzeria.name", "Alzeria");
 			nationConfig.createSection("Alzeria.skills");
+			nationConfig.createSection("Alzeria.originbiomes");
+			nationConfig.set("Alzeria.biome-damage-reduce", 30D);
 			nationConfig.set("Farhelm.name", "Farhelm");
 			nationConfig.createSection("Farhelm.skills");
+			nationConfig.createSection("Farhelm.originbiomes");
+			nationConfig.set("Farhelm.biome-damage-reduce", 30D);
 			nationConfig.set("Drakmar.name", "Drakmar");
 			nationConfig.createSection("Drakmar.skills");
+			nationConfig.createSection("Drakmar.originbiomes");
+			nationConfig.set("Drakmar.biome-damage-reduce", 30D);
 			nationConfig.set("Voronia.name", "Voronia");
 			nationConfig.createSection("Voronia.skills");
+			nationConfig.createSection("Voronia.originbiomes");
+			nationConfig.set("Voronia.biome-damage-reduce", 30D);
 			
 			try
 			{
@@ -165,6 +174,18 @@ public class NationManager
 							nation.addNationSkill(nationSkill);
 						}
 					}
+					
+					for(String str : n.getStringList("originbiomes"))
+					{
+						Biome b = Biome.valueOf(str.toUpperCase());
+						
+						if(b!=null)
+						{
+							nation.addOriginBiome(b);
+						}
+					}
+					
+					nation.setBiomeExtraDamage(n.getDouble("biome-damage-reduce"));
 					
 					nations.add(nation);
 				}

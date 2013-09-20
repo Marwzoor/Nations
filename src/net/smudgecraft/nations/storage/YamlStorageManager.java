@@ -270,6 +270,7 @@ public class YamlStorageManager
 			
 			if(config.contains("nation.name") && config.contains("nation.level") && NationManager.containsNationByName(config.getString("nation.name")) && config.contains("nation.experience"))
 			{
+				nationPlayer.setNationName(config.getString("nation.name"));
 				nationPlayer.setLevel(config.getInt("nation.level"));
 				nationPlayer.setExperience(config.getInt("nation.experience"));
 			}
