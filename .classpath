@@ -3,5 +3,6 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jre6"/>
 	<classpathentry kind="lib" path="C:/Users/Ägaren/Dropbox/ServerDev/Plugins Build API/spigot-api-1.6.2-R0.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Ägaren/Dropbox/ServerDev/Plugins Build API/Heroes 1.6.2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

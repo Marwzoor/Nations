@@ -1,5 +1,10 @@
 main: net.smudgecraft.nations.Nations
 name: Nations
-version: 0.1
+version: 0.2
 website: http://smudgecraft.net
 author: Marwzoor
+depend: [Heroes]
+commands:
+    nation:
+        description: Essentials command for the plugin.
+        usage: /nation <args>
