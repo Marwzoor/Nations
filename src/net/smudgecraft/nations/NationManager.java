@@ -282,16 +282,11 @@ public class NationManager
 														
 							for(Skill skill : loadedSkills)
 							{
-								System.out.println("Looped through skill: " + skill.getName());
 								if(skill.getName().equalsIgnoreCase(name))
 								{
 									Skill tempSkill = skill;
 									tempSkill.setConfiguration(node);
 									nation.addSkill(tempSkill);
-								}
-								else
-								{
-									System.out.println("Skills name was not: " + name);
 								}
 							}
 						}

@@ -5,6 +5,7 @@ import net.smudgecraft.nations.NationManager;
 import net.smudgecraft.nations.NationPlayer;
 import net.smudgecraft.nations.Nations;
 import net.smudgecraft.nations.OfflineNationPlayer;
+import net.smudgecraft.nations.skills.PassiveSkill;
 import net.smudgecraft.nations.skills.Skill;
 
 import org.bukkit.Bukkit;
@@ -179,9 +180,31 @@ public class NationCommand implements CommandExecutor
 					return true;
 				}
 				
+				player.sendMessage(ChatColor.BLUE + "-----[ " + ChatColor.DARK_GREEN + "Nation Information " + ChatColor.BLUE + "]-----");
+				player.sendMessage(ChatColor.GREEN + "Nation: " + ChatColor.BLUE + nationPlayer.getNation().getName());
+				player.sendMessage(ChatColor.GREEN + "Level: " + ChatColor.BLUE + nationPlayer.getLevel());
+				
+				if(!nationPlayer.getNation().getSkills().isEmpty())
+				{
+				player.sendMessage(ChatColor.GREEN + "Skills: ");
+				
 				for(Skill skill : nationPlayer.getNation().getSkills())
 				{
-					player.sendMessage(ChatColor.AQUA + skill.getName() + ": " + ChatColor.RED + skill.getDescription());
+					if(skill instanceof PassiveSkill)
+					{
+						PassiveSkill pSkill = (PassiveSkill) skill;
+						if(nationPlayer.hasAccessToSkill(pSkill))
+						{
+							player.sendMessage(ChatColor.GREEN + "Level " + pSkill.getLevelRequirement() + " - " + ChatColor.YELLOW + pSkill.getName() + ": " + ChatColor.AQUA + pSkill.getDescription(nationPlayer));
+						}
+						else
+						{
+							player.sendMessage(ChatColor.RED + "Level " + pSkill.getLevelRequirement() + " - " + ChatColor.YELLOW + pSkill.getName() + ": " + ChatColor.AQUA + pSkill.getDescription(nationPlayer));
+						}
+					}
+				}
+				
+				player.sendMessage(ChatColor.BLUE + "--------------------------------");
 				}
 			}
 		}

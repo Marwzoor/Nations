@@ -1,6 +1,7 @@
 package net.smudgecraft.nations;
 
 import net.smudgecraft.nations.events.ChangeLevelEvent;
+import net.smudgecraft.nations.skills.PassiveSkill;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -15,6 +16,19 @@ public class NationPlayer
 	public NationPlayer(Player player)
 	{
 		this.player=player;
+	}
+	
+	public boolean hasAccessToSkill(PassiveSkill skill)
+	{
+		if(nation == null || nation.getSkill(skill.getName())==null)
+			return false;
+		
+		int levelRequirement = skill.getLevelRequirement();
+		
+		if(level<levelRequirement)
+			return false;
+		
+		return true;
 	}
 	
 	public void setExperience(int exp)
