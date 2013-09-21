@@ -1,5 +1,7 @@
 package net.smudgecraft.nations.commands;
 
+import java.util.List;
+
 import net.smudgecraft.nations.Nation;
 import net.smudgecraft.nations.NationManager;
 import net.smudgecraft.nations.NationPlayer;
@@ -159,9 +161,82 @@ public class NationCommand implements CommandExecutor
 			
 			if(args.length>0)
 			{
-				if(args[0].equalsIgnoreCase(""))
+				if(args[0].equalsIgnoreCase("help"))
 				{
+					player.sendMessage(ChatColor.DARK_GRAY + "--------------------[ " + ChatColor.GOLD + "Nations Help" + ChatColor.DARK_GRAY + " ]--------------------");
+					player.sendMessage(ChatColor.GOLD + "/nation - " + ChatColor.GRAY + "Displays information about your nation");
+					player.sendMessage(ChatColor.GOLD + "/nation help - " + ChatColor.GRAY + "Brings you this menu");
+					player.sendMessage(ChatColor.GOLD + "/nation whois <player> - " + ChatColor.GRAY + "Displays nation information about a chosen player");
+					player.sendMessage(ChatColor.GOLD + "/nation list <page> - " + ChatColor.GRAY + "Lists online players in your nation");
+					player.sendMessage(ChatColor.DARK_GRAY + "-----------------------------------------------------");
+					return true;
+				}
+				else if(args[0].equalsIgnoreCase("list"))
+				{
+					NationPlayer nationPlayer = NationManager.getNationPlayer(player);
 					
+					if(nationPlayer==null)
+					{
+						player.sendMessage(ChatColor.RED + "You are worth null to me!");
+						return true;
+					}
+					
+					if(nationPlayer.getNation()==null)
+					{
+						player.sendMessage(ChatColor.RED + "You don't have a nation!");
+					}
+					
+					int page = 1;
+					
+					if(args.length>1)
+					{
+						String number = args[1];
+						
+						try
+						{
+							page = Integer.parseInt(number);
+						}
+						catch(NumberFormatException e)
+						{
+							player.sendMessage(ChatColor.YELLOW + number + ChatColor.RED + "is not a valid page number!");
+							return true;
+						}
+					}
+					
+					if(page<1)
+						page=1;
+										
+					int amountPerPage = 5;
+										
+					List<NationPlayer> nationPlayers = NationManager.getAllFromNation(nationPlayer.getNation());
+					
+					int pages = nationPlayers.size()/amountPerPage;
+					int extraPlayers = nationPlayers.size()%amountPerPage;
+					int maxPages = pages;
+					
+					if(extraPlayers==0 && page>pages)
+						page=pages;
+					
+					if(extraPlayers!=0 && page>pages+1)
+					{
+						page = pages+1;
+						amountPerPage=extraPlayers;
+					}
+					
+					if(extraPlayers!=0)
+					{
+						maxPages = pages+1;
+					}
+										
+					player.sendMessage(ChatColor.DARK_GRAY + "---------------[ " + ChatColor.GOLD + "Online Nation Players" + ChatColor.DARK_GRAY + " ]----------------");
+					player.sendMessage(ChatColor.DARK_GRAY + "(Page " + page + " of " + maxPages + ")");
+					for(int i=0;i<amountPerPage;++i)
+					{
+						NationPlayer nplayer = nationPlayers.get((i+1)*page);
+						if(nplayer!=null && nplayer.getPlayer()!=null)
+							player.sendMessage(ChatColor.GOLD + nplayer.getPlayer().getName() + ": " + ChatColor.GRAY + nplayer.getLevel());
+					}
+					player.sendMessage(ChatColor.DARK_GRAY + "-----------------------------------------------------");
 				}
 			}
 			else
@@ -176,17 +251,17 @@ public class NationCommand implements CommandExecutor
 				
 				if(nationPlayer.getNation()==null)
 				{
-					player.sendMessage(ChatColor.RED + "You have no nation!");
+					player.sendMessage(ChatColor.RED + "You don't have a nation!");
 					return true;
 				}
 				
-				player.sendMessage(ChatColor.BLUE + "-----[ " + ChatColor.DARK_GREEN + "Nation Information " + ChatColor.BLUE + "]-----");
-				player.sendMessage(ChatColor.GREEN + "Nation: " + ChatColor.BLUE + nationPlayer.getNation().getName());
-				player.sendMessage(ChatColor.GREEN + "Level: " + ChatColor.BLUE + nationPlayer.getLevel());
+				player.sendMessage(ChatColor.DARK_GRAY + "-----------------[ " + ChatColor.GOLD + "Nation Information " + ChatColor.DARK_GRAY + "]-----------------");
+				player.sendMessage(ChatColor.GOLD + "Nation: " + ChatColor.GRAY + nationPlayer.getNation().getName());
+				player.sendMessage(ChatColor.GOLD + "Level: " + ChatColor.GRAY + nationPlayer.getLevel());
 				
 				if(!nationPlayer.getNation().getSkills().isEmpty())
 				{
-				player.sendMessage(ChatColor.GREEN + "Skills: ");
+				player.sendMessage(ChatColor.GOLD + "Traits: ");
 				
 				for(Skill skill : nationPlayer.getNation().getSkills())
 				{
@@ -195,16 +270,16 @@ public class NationCommand implements CommandExecutor
 						PassiveSkill pSkill = (PassiveSkill) skill;
 						if(nationPlayer.hasAccessToSkill(pSkill))
 						{
-							player.sendMessage(ChatColor.GREEN + "Level " + pSkill.getLevelRequirement() + " - " + ChatColor.YELLOW + pSkill.getName() + ": " + ChatColor.AQUA + pSkill.getDescription(nationPlayer));
+							player.sendMessage(ChatColor.GREEN + "  Level " + pSkill.getLevelRequirement() + " - " + ChatColor.GOLD + pSkill.getName() + ": " + ChatColor.GRAY + pSkill.getDescription(nationPlayer));
 						}
 						else
 						{
-							player.sendMessage(ChatColor.RED + "Level " + pSkill.getLevelRequirement() + " - " + ChatColor.YELLOW + pSkill.getName() + ": " + ChatColor.AQUA + pSkill.getDescription(nationPlayer));
+							player.sendMessage(ChatColor.RED + "  Level " + pSkill.getLevelRequirement() + " - " + ChatColor.GOLD + pSkill.getName() + ": " + ChatColor.GRAY + pSkill.getDescription(nationPlayer));
 						}
 					}
 				}
 				
-				player.sendMessage(ChatColor.BLUE + "--------------------------------");
+				player.sendMessage(ChatColor.DARK_GRAY + "-----------------------------------------------------");
 				}
 			}
 		}

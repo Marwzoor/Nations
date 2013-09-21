@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
+import net.smudgecraft.nations.skills.PassiveSkill;
 import net.smudgecraft.nations.skills.Skill;
 
 import org.bukkit.configuration.ConfigurationSection;
@@ -227,29 +228,17 @@ public class NationManager
 				e.printStackTrace();
 			}
 		}
-		else
-		{
-			EXP_MODIFIER = 1.0D + config.getDouble("exp-modifier");
-		}
 		
 		if(firstTime)
 		{
 			nationConfig.set("Alzeria.name", "Alzeria");
 			nationConfig.createSection("Alzeria.skills");
-			nationConfig.createSection("Alzeria.originbiomes");
-			nationConfig.set("Alzeria.biome-damage-reduce", 30D);
 			nationConfig.set("Farhelm.name", "Farhelm");
 			nationConfig.createSection("Farhelm.skills");
-			nationConfig.createSection("Farhelm.originbiomes");
-			nationConfig.set("Farhelm.biome-damage-reduce", 30D);
 			nationConfig.set("Drakmar.name", "Drakmar");
 			nationConfig.createSection("Drakmar.skills");
-			nationConfig.createSection("Drakmar.originbiomes");
-			nationConfig.set("Drakmar.biome-damage-reduce", 30D);
 			nationConfig.set("Voronia.name", "Voronia");
 			nationConfig.createSection("Voronia.skills");
-			nationConfig.createSection("Voronia.originbiomes");
-			nationConfig.set("Voronia.biome-damage-reduce", 30D);
 			
 			try
 			{
@@ -282,10 +271,11 @@ public class NationManager
 														
 							for(Skill skill : loadedSkills)
 							{
-								if(skill.getName().equalsIgnoreCase(name))
+								if(skill.getName().equalsIgnoreCase(name) && skill instanceof PassiveSkill)
 								{
-									Skill tempSkill = skill;
+									PassiveSkill tempSkill = (PassiveSkill) skill;
 									tempSkill.setConfiguration(node);
+									tempSkill.setLevelRequirement(tempSkill.getConfigOption("level", 1));
 									nation.addSkill(tempSkill);
 								}
 							}
@@ -300,7 +290,7 @@ public class NationManager
 			
 			nations.add(defaultNation);
 			
-			EXP_MODIFIER = 1.0D + nationConfig.getDouble("exp-modifier");
+			EXP_MODIFIER = 1.0D + config.getDouble("exp-modifier");
 		}
 	}
 	

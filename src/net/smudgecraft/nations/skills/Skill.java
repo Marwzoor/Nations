@@ -21,13 +21,33 @@ public abstract class Skill
 		node=null;
 	}
 	
-	public List<? extends Object> getConfigList(String option, List<? extends Object> def)
+	public List<String> getConfigStringList(String option, List<String> def)
 	{
 		if(node == null || !node.contains(option))
 			return def;
 		else
 		{
-			return node.getList(option);
+			return node.getStringList(option);
+		}
+	}
+	
+	public List<Integer> getConfigIntegerList(String option, List<Integer> def)
+	{
+		if(node == null || !node.contains(option))
+			return def;
+		else
+		{
+			return node.getIntegerList(option);
+		}
+	}
+	
+	public List<Double> getonfigDoubleList(String option, List<Double> def)
+	{
+		if(node == null || !node.contains(option))
+			return def;
+		else
+		{
+			return node.getDoubleList(option);
 		}
 	}
 	
@@ -39,6 +59,38 @@ public abstract class Skill
 		{
 			return node.get(option);
 		}
+	}
+	
+	public int getConfigOption(String option, int def)
+	{
+		if(node==null || !node.contains(option))
+			return def;
+		else
+			return node.getInt(option);
+	}
+	
+	public String getConfigOption(String option, String def)
+	{
+		if(node==null || !node.contains(option))
+			return def;
+		else
+			return node.getString(option);
+	}
+	
+	public double getConfigOption(String option, double def)
+	{
+		if(node==null || !node.contains(option))
+			return def;
+		else
+			return node.getDouble(option);
+	}
+	
+	public List<?> getConfigOption(String option, List<?> def)
+	{
+		if(node==null || !node.contains(option))
+			return def;
+		else
+			return node.getList(option);
 	}
 	
 	public ConfigurationSection getConfiguration()

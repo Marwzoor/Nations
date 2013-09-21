@@ -25,7 +25,6 @@ public abstract class PassiveSkill extends Skill
 		
 		if(nlevel<=levelRequirement)
 			return 0;
-		
 		else
 			return (nlevel-levelRequirement);
 	}
