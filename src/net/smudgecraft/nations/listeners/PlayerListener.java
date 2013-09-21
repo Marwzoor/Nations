@@ -3,11 +3,9 @@ package net.smudgecraft.nations.listeners;
 import net.smudgecraft.nations.Nation;
 import net.smudgecraft.nations.NationManager;
 import net.smudgecraft.nations.NationPlayer;
-import net.smudgecraft.nations.NationSkill;
 import net.smudgecraft.nations.Nations;
 
 import org.bukkit.ChatColor;
-import org.bukkit.block.Biome;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -17,7 +15,6 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-import com.herocraftonline.heroes.api.events.CharacterDamageEvent;
 import com.herocraftonline.heroes.characters.Hero;
 import com.herocraftonline.heroes.util.Messaging;
 
@@ -28,41 +25,6 @@ public class PlayerListener implements Listener
 	public PlayerListener(Nations plugin)
 	{
 		this.plugin=plugin;
-	}
-	
-	@EventHandler
-	public void onCharacterDamage(CharacterDamageEvent event)
-	{
-		if(event.isCancelled())
-			return;
-		
-		if(!(event.getEntity() instanceof Player))
-			return;
-
-		Player player = (Player) event.getEntity();
-		
-		NationPlayer nationPlayer = NationManager.getNationPlayer(player);
-				
-		if(nationPlayer==null)
-			return;
-		
-		Biome currentBiome = player.getLocation().getBlock().getBiome();
-		
-		if(nationPlayer.getNation()==null)
-			return;
-		
-		if(!nationPlayer.getNation().isOriginBiome(currentBiome))
-			return;
-		
-		double reducedDamage = nationPlayer.getNation().getOriginReducedDamage();
-		
-		double damage = event.getDamage();
-		
-		reducedDamage = (1 - (reducedDamage/100));
-		
-		damage = damage*reducedDamage;
-		
-		event.setDamage((int) damage);
 	}
 	
 	@EventHandler
@@ -152,16 +114,6 @@ public class PlayerListener implements Listener
 				nationPlayer.setNation(NationManager.getNation(nationName));
 				
 				NationManager.addNationPlayer(nationPlayer);
-				
-				for(NationSkill nSkill : NationManager.getNation(nationName).getNationSkills())
-				{
-					final Hero hero = plugin.getHeroes().getCharacterManager().getHero(player);
-					
-					if(nSkill.getNode().contains("nationlevel") && nSkill.getNode().getInt("nationlevel")<=nationPlayer.getLevel())
-					{
-						hero.addSkill(nSkill.getName(), nSkill.getNode());
-					}
-				}
 			}
 		}
 		else

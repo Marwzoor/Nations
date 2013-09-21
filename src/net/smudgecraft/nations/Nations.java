@@ -44,6 +44,8 @@ public class Nations extends JavaPlugin
 		
 		Bukkit.getPluginManager().registerEvents(new PlayerListener(this), this);
 		
+		NationManager.initClassLoader();
+		NationManager.loadSkills();
 		NationManager.loadNations();
 		
 		this.yamlStorageManager = new YamlStorageManager(this);

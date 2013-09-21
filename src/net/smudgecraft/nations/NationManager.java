@@ -5,24 +5,135 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.InputStreamReader;
+import java.lang.reflect.Constructor;
+import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
-import org.bukkit.block.Biome;
+import net.smudgecraft.nations.skills.Skill;
+
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.PluginClassLoader;
 
 public class NationManager 
 {
 	private static List<Nation> nations = new ArrayList<Nation>();
 	private static List<NationPlayer> nationPlayers = new ArrayList<NationPlayer>();
 	public static double EXP_MODIFIER;
+	private static List<Skill> loadedSkills = new ArrayList<Skill>();
+	private static URLClassLoader classLoader;
 	
 	public NationManager()
 	{
+		initClassLoader();
+		loadSkills();
 		loadNations();
+	}
+	
+	public static void initClassLoader()
+	{
+		File folder = new File(Nations.getPlugin().getDataFolder() + "/skills/");
+		
+		if(!folder.exists())
+		{
+			folder.mkdirs();
+			return;
+		}
+		
+		PluginClassLoader pluginClassLoader = (PluginClassLoader) Nations.getPlugin().getClass().getClassLoader();
+				
+		if(pluginClassLoader.getClass().getConstructors().length > 1)
+		{
+			return;
+		}
+				
+		for(File f : folder.listFiles())
+		{
+			if(f.getName().endsWith(".jar"))
+			{
+				try
+				{
+					pluginClassLoader.addURL(f.toURI().toURL());
+				}
+				catch(Exception e)
+				{
+					e.printStackTrace();
+				}
+			}
+		}
+		
+		classLoader = new URLClassLoader(pluginClassLoader.getURLs(), pluginClassLoader);
+	}
+	
+	public static void loadSkills()
+	{	
+		File folder = new File(Nations.getPlugin().getDataFolder() + "/skills/");
+		
+		if(!folder.exists())
+		{
+			folder.mkdirs();
+			return;
+		}
+		
+		for(File f : folder.listFiles())
+		{
+			if(f.getName().endsWith(".jar"))
+			{
+				try 
+				{					
+					JarFile jarFile = new JarFile(f);
+					
+					Enumeration<JarEntry> entries = jarFile.entries();
+					
+					String main = null;
+					
+					while(entries.hasMoreElements())
+					{
+						JarEntry jarEntry = (JarEntry) entries.nextElement();
+						
+						if(jarEntry.getName().equals("main.skill"))
+						{
+							BufferedReader in = new BufferedReader(new InputStreamReader(jarFile.getInputStream(jarEntry)));
+							
+							main = in.readLine().substring(12);
+							break;
+						}
+					}
+					
+					if(main!=null)
+					{
+						Class<?> clazz = Class.forName(main, true, classLoader);
+						
+						Class<? extends Skill> skillClass = clazz.asSubclass(Skill.class);
+						
+						Constructor<? extends Skill> constructor = skillClass.getConstructor(new Class[] { Nations.getPlugin().getClass() });
+					
+						Skill skill = (Skill) constructor.newInstance(new Object[] { Nations.getPlugin() });
+						
+						loadedSkills.add(skill);
+					}
+					
+					jarFile.close();
+					
+				} 
+				catch (Exception e) 
+				{
+					e.printStackTrace();
+				}
+				
+			}
+		}
+	}
+	
+	public static List<Skill> getLoadedSkills()
+	{
+		return loadedSkills;
 	}
 	
 	public static void loadNations()
@@ -168,24 +279,23 @@ public class NationManager
 							ConfigurationSection node = skills.getConfigurationSection(str);
 							
 							String name = str;
-							
-							NationSkill nationSkill = new NationSkill(name, node);
-							
-							nation.addNationSkill(nationSkill);
+														
+							for(Skill skill : loadedSkills)
+							{
+								System.out.println("Looped through skill: " + skill.getName());
+								if(skill.getName().equalsIgnoreCase(name))
+								{
+									Skill tempSkill = skill;
+									tempSkill.setConfiguration(node);
+									nation.addSkill(tempSkill);
+								}
+								else
+								{
+									System.out.println("Skills name was not: " + name);
+								}
+							}
 						}
 					}
-					
-					for(String str : n.getStringList("originbiomes"))
-					{
-						Biome b = Biome.valueOf(str.toUpperCase());
-						
-						if(b!=null)
-						{
-							nation.addOriginBiome(b);
-						}
-					}
-					
-					nation.setBiomeExtraDamage(n.getDouble("biome-damage-reduce"));
 					
 					nations.add(nation);
 				}

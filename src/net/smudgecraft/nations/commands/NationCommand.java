@@ -5,6 +5,7 @@ import net.smudgecraft.nations.NationManager;
 import net.smudgecraft.nations.NationPlayer;
 import net.smudgecraft.nations.Nations;
 import net.smudgecraft.nations.OfflineNationPlayer;
+import net.smudgecraft.nations.skills.Skill;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -25,31 +26,23 @@ public class NationCommand implements CommandExecutor
 	
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String args[])
 	{
-		if(commandLabel.equalsIgnoreCase("nation"))
+		if(commandLabel.equalsIgnoreCase("nation") && sender.isOp() && args.length>0 && args[0].equalsIgnoreCase("admin"))
 		{
-			if(args.length>0)
-			{
-				if(args[0].equalsIgnoreCase("skills") && sender instanceof Player)
+				if(args.length>1)
 				{
-					
-				}
-				else if(args[0].equalsIgnoreCase("admin") && sender.isOp())
-				{
-					if(args.length>1)
+					if(args[1].equalsIgnoreCase("nation"))
 					{
-						if(args[1].equalsIgnoreCase("nation"))
+						if(args.length>3)
 						{
-							if(args.length>3)
+							OfflinePlayer player = Bukkit.getOfflinePlayer(args[2]);
+								
+							Nation newNation = NationManager.getNation(args[3]);
+							
+							if(newNation==null)
 							{
-								OfflinePlayer player = Bukkit.getOfflinePlayer(args[2]);
-								
-								Nation newNation = NationManager.getNation(args[3]);
-								
-								if(newNation==null)
-								{
-									sender.sendMessage(ChatColor.RED + "There is no nation by the name: " + ChatColor.BLUE + args[3] + ChatColor.RED + " configured!");
-									return true;
-								}
+								sender.sendMessage(ChatColor.RED + "There is no nation by the name: " + ChatColor.BLUE + args[3] + ChatColor.RED + " configured!");
+								return true;
+							}
 								
 								OfflineNationPlayer onPlayer = plugin.getYamlStorageManager().loadPlayer(player);
 								
@@ -156,12 +149,42 @@ public class NationCommand implements CommandExecutor
 								sender.sendMessage(ChatColor.RED + "Command usage: " + ChatColor.BLUE + "/nation admin level <player> <nation> <level>");
 								return true;
 							}
-						}
-					}
 				}
 			}
 		}
-		
+		else if(commandLabel.equalsIgnoreCase("nation") && sender instanceof Player)
+		{
+			Player player = (Player) sender;
+			
+			if(args.length>0)
+			{
+				if(args[0].equalsIgnoreCase(""))
+				{
+					
+				}
+			}
+			else
+			{
+				NationPlayer nationPlayer = NationManager.getNationPlayer(player);
+				
+				if(nationPlayer==null)
+				{
+					player.sendMessage(ChatColor.RED + "You are worth null to me!");
+					return true;
+				}
+				
+				if(nationPlayer.getNation()==null)
+				{
+					player.sendMessage(ChatColor.RED + "You have no nation!");
+					return true;
+				}
+				
+				for(Skill skill : nationPlayer.getNation().getSkills())
+				{
+					player.sendMessage(ChatColor.AQUA + skill.getName() + ": " + ChatColor.RED + skill.getDescription());
+				}
+			}
+		}
 		return true;
 	}
 }

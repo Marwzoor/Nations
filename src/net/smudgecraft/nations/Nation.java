@@ -3,21 +3,17 @@ package net.smudgecraft.nations;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bukkit.block.Biome;
+import net.smudgecraft.nations.skills.Skill;
 
 public class Nation 
 {
 	private final String name;
-	private List<NationSkill> skills;
-	private List<Biome> origionBiomes;
-	private double reducedPercent;
+	private List<Skill> skills;
 	
 	public Nation(String name)
 	{
 		this.name = name;
-		this.skills = new ArrayList<NationSkill>();
-		this.origionBiomes=new ArrayList<Biome>();
-		this.reducedPercent=1;
+		this.skills=new ArrayList<Skill>();
 	}
 	
 	public String getName()
@@ -25,60 +21,35 @@ public class Nation
 		return this.name;
 	}
 	
-	public void setBiomeExtraDamage(double extrapercent)
+	public Skill getSkill(String skillName)
 	{
-		this.reducedPercent=extrapercent;
-	}
-	
-	public boolean isOriginBiome(Biome biome)
-	{
-		return origionBiomes.contains(biome);
-	}
-	
-	public double getOriginReducedDamage()
-	{
-		return this.reducedPercent;
-	}
-	
-	public void addOriginBiome(Biome biome)
-	{
-		this.origionBiomes.add(biome);
-	}
-	
-	public void removeOriginBiome(Biome biome)
-	{
-		this.origionBiomes.remove(biome);
-	}
-	
-	public NationSkill getNationSkill(String skill)
-	{
-		for(NationSkill nSkill : skills)
+		for(Skill skill : skills)
 		{
-			if(nSkill.getName().equalsIgnoreCase(skill))
-				return nSkill;
+			if(skill.getName().equalsIgnoreCase(skillName))
+				return skill;
 		}
 		
 		return null;
 	}
 	
-	public void addNationSkill(NationSkill nationSkill)
+	public void addSkill(Skill skill)
 	{
-		skills.add(nationSkill);
+		skills.add(skill);
 	}
 	
-	public List<NationSkill> getNationSkills()
+	public List<Skill> getSkills()
 	{
 		return this.skills;
 	}
 	
-	public void removeNationSkill(NationSkill nationSkill)
+	public void removeNationSkill(Skill skill)
 	{
-		skills.remove(nationSkill);
+		skills.remove(skill);
 	}
 	
 	public void removeNationSkill(String skill)
 	{
-		if(getNationSkill(skill)!=null)
-			skills.remove(getNationSkill(skill));
+		if(getSkill(skill)!=null)
+			skills.remove(getSkill(skill));
 	}
 }
